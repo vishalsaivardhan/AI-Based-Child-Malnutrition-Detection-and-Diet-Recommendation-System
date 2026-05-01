@@ -1,15 +1,20 @@
 import streamlit as st
 import pickle
 import pandas as pd
+import os
 from recommend import get_diet_plan
 
 # Set Page Config
 st.set_page_config(page_title="AI Malnutrition Detector", page_icon="🥗")
 
-# Load the model
+# Load the model using a robust path for Cloud Deployment
 @st.cache_resource
 def load_model():
-    with open('malnutrition_model.pkl', 'rb') as f:
+    # This finds the directory where app.py is located on the server
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(base_path, 'malnutrition_model.pkl')
+    
+    with open(model_path, 'rb') as f:
         return pickle.load(f)
 
 model = load_model()
