@@ -10,10 +10,21 @@ st.set_page_config(page_title="AI Malnutrition Detector", page_icon="🥗")
 # Load the model using a robust path for Cloud Deployment
 @st.cache_resource
 def load_model():
-    # This finds the directory where app.py is located on the server
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    model_path = os.path.join(base_path, 'malnutrition_model.pkl')
+    # 1. Get the directory of the current script
+    base_dir = os.path.dirname(os.path.abspath(__file__))
     
+    # 2. Define the expected filename (Double check capitalization here!)
+    filename = 'malnutrition_model.pkl'
+    model_path = os.path.join(base_dir, filename)
+    
+    # 3. Diagnostic Check
+    if not os.path.exists(model_path):
+        st.error(f"❌ Error: {filename} NOT FOUND in the main folder.")
+        st.write("### 🔍 Debugging Info:")
+        st.write(f"Looking in folder: `{base_dir}`")
+        st.write("Files actually found in this folder:", os.listdir(base_dir))
+        return None
+        
     with open(model_path, 'rb') as f:
         return pickle.load(f)
 
